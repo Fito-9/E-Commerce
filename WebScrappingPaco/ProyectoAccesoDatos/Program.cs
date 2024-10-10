@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Xml;
 using Microsoft.Playwright;
 using static System.Net.Mime.MediaTypeNames;
@@ -22,7 +22,7 @@ public class Program
         await using IBrowserContext context = await browser.NewContextAsync();
         IPage page = await context.NewPageAsync();
 
-        // Ir a la página de ebay
+        // Ir a la página de CardMarket
         await page.GotoAsync("https://www.cardmarket.com/es/Pokemon");
 
         IElementHandle? acceptButton = await page.QuerySelectorAsync("#CookiesConsent > div > div > form > div > button");
@@ -62,16 +62,7 @@ public class Program
         Console.WriteLine($"La oferta más barata es: {cheapest}");
         Console.WriteLine($"La oferta más cara es: {expensive}");
         Console.WriteLine($"La media de los precios de los productos es: {average}");
-        // Abrimos el navegador con la oferta más barata
-
-        /*
-        ProcessStartInfo processInfo = new ProcessStartInfo()
-        {
-            FileName = cheapest.Url,
-            UseShellExecute = true
-        };
-        Process.Start(processInfo);
-        */
+       
     }
     private static async Task<Product> GetProductAsync(IElementHandle element)
     {
@@ -80,10 +71,10 @@ public class Program
         priceRaw = priceRaw.Replace(" €", "", StringComparison.OrdinalIgnoreCase);
         priceRaw = priceRaw.Trim();
         decimal price = decimal.Parse(priceRaw);
-        IElementHandle nameElement = await element.QuerySelectorAsync("a");
-        string name = await nameElement.InnerTextAsync();
-        IElementHandle urlElement = await element.QuerySelectorAsync("a");
-        string url = await urlElement.GetAttributeAsync("href");
+
+        //En la entrega dice que no son necesarios ni el nombre ni la URL del producto, así que ni los llamamos.
+        string name = "";
+        string url = "";
         return new Product(name, url, price);
     }
 }
