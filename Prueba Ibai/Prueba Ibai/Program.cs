@@ -23,26 +23,27 @@ public class Program
         IPage page = await context.NewPageAsync();
 
         // Ir a la página de CardMarket
-        await page.GotoAsync("https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiy9YzWw4iJAxVU1QIHHe4MFmAQFnoECCwQAQ&url=https%3A%2F%2Fwww.mtgmetropolis.com%2Fmetropolistienda%2Fshow_category.asp%3Fcategory%3D44%26Ampliacion%3DCajas%2520y%2520Sobres&usg=AOvVaw0fntyplDObbDUUSqXM3X7q&opi=89978449");
+        await page.GotoAsync("https://xtremmedia.com");
 
-        //IElementHandle? acceptButton = await page.QuerySelectorAsync("#CookiesConsent > div > div > form > div > button");
+        //IElementHandle? acceptButton = await page.QuerySelectorAsync("#ecwid-products > div > div > div > div > div > div:nth-child(2) > div > div.ec-store.ec-store--no-transition > div > div > div > div > div.ec-notice__message > div.ec-notice__buttons.ec-notice__buttons--fullwidth > div.ec-notice__button.ec-notice__button--ok > div > button");
         //if (acceptButton != null) await acceptButton.ClickAsync();
-
+        //IElementHandle? notificaciones = await page.QuerySelectorAsync("#alert_box_btn_close");
+        //if(notificaciones != null) await notificaciones.ClickAsync();
         // Escribimos en la barra de búsqueda lo que queremos buscar
         // Para conseguir el enlace, inspeccionamos en la zona
-        //IElementHandle buscar = await page.QuerySelectorAsync("#menu-1-c9878bc > li.astm-search-menu.is-menu.is-dropdown.menu-item > a > svg > path");
+        //IElementHandle buscar = await page.QuerySelectorAsync("#tvcms-mobile-view-header > div.tvcmsheader-sticky > div.tvcmsmobile-header-search-logo-wrapper > div.tvcmsmobile-header-search.col-md-4.col-sm-4 > div.tvmobile-search-icon");
         //await buscar.ClickAsync();
-        IElementHandle searchInput = await page.QuerySelectorAsync("body > div > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td:nth-child(4) > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td:nth-child(4) > input.textfield_buscador");
-        await searchInput.FillAsync("pokemon");
+        IElementHandle searchInput = await page.QuerySelectorAsync("#_desktop_search > div > div > div.tvsearch-header-display-wrappper.tvsearch-header-display-full > form > div.tvheader-top-search > div > input");
+        await searchInput.FillAsync("sobre pokemon");
 
         // Le damos al botón de buscar
-        IElementHandle searchButton = await page.QuerySelectorAsync("body > div > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td:nth-child(4) > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td:nth-child(5) > input[type=image]");
+        IElementHandle searchButton = await page.QuerySelectorAsync("#_desktop_search > div > div > div.tvsearch-header-display-wrappper.tvsearch-header-display-full > form > div.tvheader-top-search-wrapper");
         await searchButton.ClickAsync();
         await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
 
         // Recorremos la lista de productos y recolectamos los datos
         List<Product> products = new List<Product>();
-        IReadOnlyList<IElementHandle> productElements = await page.QuerySelectorAllAsync("body > div > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td:nth-child(2) > table > tbody > tr > td > table:nth-child(3)");
+        IReadOnlyList<IElementHandle> productElements = await page.QuerySelectorAllAsync("#dfd-results-20WcD");
 
         for (int i = 0; i <= 9; i++)
         {
@@ -68,7 +69,7 @@ public class Program
     }
     private static async Task<Product> GetProductAsync(IElementHandle element)
     {
-        IElementHandle priceElement = await element.QuerySelectorAsync("table > tbody > tr > td:nth-child(2) > table > tbody > tr > td > table:nth-child(3) > tbody > tr > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(1) > td > table > tbody > tr > td.blanco > a.precio_listado");
+        IElementHandle priceElement = await element.QuerySelectorAsync("#df-result-product-4e1e5c6bdbdb8d2b0a5cd85131b2177d-options > div.dfd-card-pricing > span");
         string priceRaw = await priceElement.InnerTextAsync();
         priceRaw = priceRaw.Replace(" €", "", StringComparison.OrdinalIgnoreCase);
         priceRaw = priceRaw.Trim();
