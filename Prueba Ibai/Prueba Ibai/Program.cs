@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Xml;
 using Microsoft.Playwright;
 using static System.Net.Mime.MediaTypeNames;
@@ -23,26 +23,26 @@ public class Program
         IPage page = await context.NewPageAsync();
 
         // Ir a la página de CardMarket
-        await page.GotoAsync("https://pokebank.es");
+        await page.GotoAsync("https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiy9YzWw4iJAxVU1QIHHe4MFmAQFnoECCwQAQ&url=https%3A%2F%2Fwww.mtgmetropolis.com%2Fmetropolistienda%2Fshow_category.asp%3Fcategory%3D44%26Ampliacion%3DCajas%2520y%2520Sobres&usg=AOvVaw0fntyplDObbDUUSqXM3X7q&opi=89978449");
 
         //IElementHandle? acceptButton = await page.QuerySelectorAsync("#CookiesConsent > div > div > form > div > button");
         //if (acceptButton != null) await acceptButton.ClickAsync();
 
         // Escribimos en la barra de búsqueda lo que queremos buscar
         // Para conseguir el enlace, inspeccionamos en la zona
-        IElementHandle buscar = await page.QuerySelectorAsync("#menu-1-c9878bc > li.astm-search-menu.is-menu.is-dropdown.menu-item > a > svg > path");
-        await buscar.ClickAsync();
-        IElementHandle searchInput = await page.QuerySelectorAsync("#is-search-input-24930");
-        await searchInput.FillAsync("sobres de pokemon");
+        //IElementHandle buscar = await page.QuerySelectorAsync("#menu-1-c9878bc > li.astm-search-menu.is-menu.is-dropdown.menu-item > a > svg > path");
+        //await buscar.ClickAsync();
+        IElementHandle searchInput = await page.QuerySelectorAsync("body > div > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td:nth-child(4) > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td:nth-child(4) > input.textfield_buscador");
+        await searchInput.FillAsync("pokemon");
 
         // Le damos al botón de buscar
-        IElementHandle searchButton = await page.QuerySelectorAsync("#menu-1-c9878bc > li.astm-search-menu.is-menu.is-dropdown.menu-item > form > button > span.is-search-icon");
+        IElementHandle searchButton = await page.QuerySelectorAsync("body > div > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td:nth-child(4) > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td:nth-child(5) > input[type=image]");
         await searchButton.ClickAsync();
         await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
 
         // Recorremos la lista de productos y recolectamos los datos
         List<Product> products = new List<Product>();
-        IReadOnlyList<IElementHandle> productElements = await page.QuerySelectorAllAsync("#main > div > ul");
+        IReadOnlyList<IElementHandle> productElements = await page.QuerySelectorAllAsync("body > div > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2) > table > tbody > tr > td:nth-child(2) > table > tbody > tr > td > table:nth-child(3)");
 
         for (int i = 0; i <= 9; i++)
         {
@@ -68,7 +68,7 @@ public class Program
     }
     private static async Task<Product> GetProductAsync(IElementHandle element)
     {
-        IElementHandle priceElement = await element.QuerySelectorAsync("li.member-discount.discount-restricted.ast-grid-common-col.ast-full-width.ast-article-post.desktop-align-left.tablet-align-left.mobile-align-left.product.type-product.post-18243.status-publish.instock.product_cat-destacados.product_cat-ingles.product_cat-no-limite-pro.product_cat-sobre.has-post-thumbnail.shipping-taxable.purchasable.product-type-simple > div.astra-shop-summary-wrap > span.price > span > bdi");
+        IElementHandle priceElement = await element.QuerySelectorAsync("table > tbody > tr > td:nth-child(2) > table > tbody > tr > td > table:nth-child(3) > tbody > tr > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(1) > td > table > tbody > tr > td.blanco > a.precio_listado");
         string priceRaw = await priceElement.InnerTextAsync();
         priceRaw = priceRaw.Replace(" €", "", StringComparison.OrdinalIgnoreCase);
         priceRaw = priceRaw.Trim();
