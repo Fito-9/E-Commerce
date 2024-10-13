@@ -16,7 +16,7 @@ public class Program
         {
             Headless = false // Se indica falso para poder ver el navegador
         };
-//# df-result-product-47cfa770f13a872404130b54af41a573-options > div.dfd-card-pricing
+        //# df-result-product-47cfa770f13a872404130b54af41a573-options > div.dfd-card-pricing
         await using IBrowser browser = await
         playwright.Chromium.LaunchAsync(options);
         await using IBrowserContext context = await browser.NewContextAsync();
