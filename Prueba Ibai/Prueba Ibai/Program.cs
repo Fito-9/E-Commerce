@@ -16,7 +16,7 @@ public class Program
         {
             Headless = false // Se indica falso para poder ver el navegador
         };
-
+//# df-result-product-47cfa770f13a872404130b54af41a573-options > div.dfd-card-pricing
         await using IBrowser browser = await
         playwright.Chromium.LaunchAsync(options);
         await using IBrowserContext context = await browser.NewContextAsync();
@@ -43,7 +43,7 @@ public class Program
 
         // Recorremos la lista de productos y recolectamos los datos
         List<Product> products = new List<Product>();
-        IReadOnlyList<IElementHandle> productElements = await page.QuerySelectorAllAsync("#dfd-results-20WcD");
+        IReadOnlyList<IElementHandle> productElements = await page.QuerySelectorAllAsync("#dfd-results-ymgrZ");
 
         for (int i = 0; i <= 9; i++)
         {
@@ -59,7 +59,6 @@ public class Program
         // Con los datos recolectados, buscamos el producto más barato
         Product cheapest = products.MinBy(p => p.Price);
         Product expensive = products.MaxBy(p => p.Price);
-
         decimal average = products.Average(p => p.Price);
 
         Console.WriteLine($"La oferta más barata es: {cheapest}");
@@ -69,7 +68,7 @@ public class Program
     }
     private static async Task<Product> GetProductAsync(IElementHandle element)
     {
-        IElementHandle priceElement = await element.QuerySelectorAsync("#df-result-product-4e1e5c6bdbdb8d2b0a5cd85131b2177d-options > div.dfd-card-pricing > span");
+        IElementHandle priceElement = await element.QuerySelectorAsync(".dfd-card-price");
         string priceRaw = await priceElement.InnerTextAsync();
         priceRaw = priceRaw.Replace(" €", "", StringComparison.OrdinalIgnoreCase);
         priceRaw = priceRaw.Trim();
