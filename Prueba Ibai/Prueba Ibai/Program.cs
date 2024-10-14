@@ -16,7 +16,7 @@ public class Program
         playwright.Chromium.LaunchAsync(options);
         await using IBrowserContext context = await browser.NewContextAsync();
         IPage page = await context.NewPageAsync();
-        // Ir a la página de ebay
+        // Ir a la página de cartooncorp
         await page.GotoAsync("https://cartooncorp.es");
         // Escribimos en la barra de búsqueda lo que queremos buscar
         IElementHandle searchInput = await page.QuerySelectorAsync("#search_widget > form > input");
@@ -41,27 +41,40 @@ public class Program
             }
             catch { }
         }
-        //       Product cheapest = products.MinBy(p => p.Price);
-        //     Product expensive = products.MaxBy(p => p.Price);
-        //        decimal average = products.Average(p => p.Price);
+        Product cheapest = products.MinBy(p => p.Price);
+        Product expensive = products.MaxBy(p => p.Price);
+        decimal average = products.Average(p => p.Price);
 
-        //       Console.WriteLine($"La oferta más barata es: {cheapest.Price}");
-        //       Console.WriteLine($"La oferta más cara es: {expensive.Price}");
-        //        Console.WriteLine($"La media de los precios de los productos es: {average}");
+        Console.WriteLine($"La oferta más barata es: {cheapest.Price}");
+        Console.WriteLine($"La oferta más cara es: {expensive.Price}");
+        Console.WriteLine($"La media de los precios de los productos es: {average}");
     }
     private static async Task<Product> GetProductAsync(IElementHandle element)
     {
-        IElementHandle priceElement = await
-        element.QuerySelectorAsync(".price");
+        IElementHandle priceElement = await element.QuerySelectorAsync("span.price");
         string priceRaw = await priceElement.InnerTextAsync();
-        priceRaw = priceRaw.Replace("&nbsp;€", "",StringComparison.OrdinalIgnoreCase);
-        priceRaw = priceRaw.Trim();
-        decimal price = decimal.Parse(priceRaw);
-        string name = "";
-        string url = "";
-        return new Product( price);
+
+        // Eliminar caracteres especiales, espacios no separables y el símbolo de la moneda
+        priceRaw = System.Text.RegularExpressions.Regex.Replace(priceRaw, @"[^\d,\.]", "");
+
+        // Reemplazar la coma por punto para el formato decimal
+        priceRaw = priceRaw.Replace(",", ".").Trim();
+
+        // Parsear el precio
+        decimal price;
+        if (!decimal.TryParse(priceRaw, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out price))
+        {
+            throw new FormatException($"Error al convertir el precio: {priceRaw}");
+        }
+
+        string name = ""; // Nombre del producto
+        
+
+        return new Product(price);
     }
 
+
 }
+
 
 
